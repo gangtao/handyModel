@@ -1,0 +1,12 @@
+{
+  "name": "vizService",
+  "version": "1.0.0",
+  "description": "rest service that generate data visualization",
+  "main": "index.js",
+  "author": "Gang Tao",
+  "license": "MIT",
+  "dependencies": {
+    "restify": "^8.4.0",
+    "squirrelly": "^7.9.0"
+  }
+}

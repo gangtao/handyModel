@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{sketchify}}</title>
+    <meta charset="UTF-8">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rough.js/3.1.0/rough.js"></script>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.4.10/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gangtao/sketchify/dist/sketchify.min.js"></script>
+    
+  </head>
+  <body>
+      <div id="chart" style="height: 400px; width: 600px"></div>
+  </body>
+  <script>
+    $(function() {
+      var data = {{dataset| safe}};
+      var chart = new G2.Chart({
+          container: 'chart',
+          forceFit: true,
+          height: 400,
+          animate: false,
+          renderer: 'svg'
+      });
+      chart.source(data);
+      chart.scale('sales', {
+          tickInterval: 20
+      });
+      chart.interval().position('{{grammar}}'); //'year*sales'
+      chart.render();
+      {{if(options.sketchify === 1)}}
+      const container = $('#chart')[0];
+      const handler = Sketchifier(container, {});
+       handler.handify();
+      {{/if}}
+    });
+  </script>
+</html>
