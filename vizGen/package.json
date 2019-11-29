@@ -1,0 +1,12 @@
+{
+  "name": "vizGen",
+  "version": "1.0.0",
+  "description": "generate viz images for model training",
+  "main": "index.js",
+  "author": "Gang Tao",
+  "license": "MIT",
+  "dependencies": {
+    "mockjs": "^1.1.0",
+    "puppeteer": "^2.0.0"
+  }
+}
