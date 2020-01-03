@@ -1,7 +1,11 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const Mock = require('mockjs')
+const Mock = require('mockjs');
+
+const imageBase = `../images`;
+
+const datasetTypes = ['train','test','val'];
 
 process.setMaxListeners(Infinity);
 
@@ -35,19 +39,20 @@ function generateBarData() {
     }
 }
 
-async function screenshot(url, name) {
+async function screenshot(url, path) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     await page.goto(url);
+    await page.setViewport({width: 600, height: 400});
     await page.screenshot({
-        path: `./images/${name}.png`
+        path: path
     });
 
     await browser.close();
 }
 
-async function generateBarCharts() {
+async function generateBarCharts(type) {
     const id = uuidv4();
     const host = 'localhost';
     const port = 8080;
@@ -67,12 +72,45 @@ async function generateBarCharts() {
     const url1 = `http://${host}:${port}/${endpoint}?sketchify=1&grammar=${grammar}&dataset=${dataset}`;
     const url2 = `http://${host}:${port}/${endpoint}?sketchify=0&grammar=${grammar}&dataset=${dataset}`;
 
-    await screenshot(url1, `handy_${id}`);
-    await screenshot(url2, `${id}`);
+    await screenshot(url1, `${imageBase}/A/${type}/${id}.png`);
+    await screenshot(url2, `${imageBase}/B/${type}/${id}.png`);
+    return id;
 }
 
 (async () => {
-    for( let i = 0; i < 10 ; i ++ ) {
-        await generateBarCharts();
+    if (!fs.existsSync(imageBase)){
+        fs.mkdirSync(imageBase);
     }
+
+    if (!fs.existsSync(`${imageBase}/A`)){
+        fs.mkdirSync(`${imageBase}/A`);
+    }
+
+    if (!fs.existsSync(`${imageBase}/B`)){
+        fs.mkdirSync(`${imageBase}/B`);
+    }
+
+    datasetTypes.forEach(function(type){
+        if (!fs.existsSync(`${imageBase}/A/${type}`)){
+            fs.mkdirSync(`${imageBase}/A/${type}`);
+        }
+
+        if (!fs.existsSync(`${imageBase}/B/${type}`)){
+            fs.mkdirSync(`${imageBase}/B/${type}`);
+        }
+    })
+
+
+    for (let i = 0; i < 400; i++) {
+        const id = await generateBarCharts('train');
+    }
+
+    for (let i = 0; i < 100; i++) {
+        const id = await generateBarCharts('test');
+    }
+
+    for (let i = 0; i < 100; i++) {
+        const id = await generateBarCharts('val');
+    }
+
 })();
